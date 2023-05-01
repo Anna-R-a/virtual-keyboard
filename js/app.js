@@ -1,4 +1,4 @@
-// import { createObject, codeKeys, keys } from "./create";
+// import { createObject, codeKeys, keys } from './create';
 
 function createObject(tag, className) {
   const element = document.createElement(tag);
@@ -21,6 +21,8 @@ const text = createObject('textarea', 'text');
 text.setAttribute('id', 'text');
 document.body.appendChild(text);
 
+const isCaps = false;
+
 function createKeyboard() {
   const keyboard = createObject('div', 'keyboard');
   document.body.appendChild(keyboard);
@@ -28,8 +30,7 @@ function createKeyboard() {
   codeKeys.forEach((key) => {
     // for (let i = 0; i < keys.length; i += 1) {
     const keyBtn = createObject('button', 'keyboard__key');
-    // keyBtn.setAttribute = ('type', 'button');
-    keyBtn.setAttribute = ('data', `${codeKeys[codeKeys.indexOf(key)]}`);
+    keyBtn.setAttribute('data', `${codeKeys[codeKeys.indexOf(key)]}`);
     if (key === 'Space') {
       keyBtn.classList.add('keyboard__key_space');
       keyBtn.innerHTML = '';
@@ -45,6 +46,14 @@ function createKeyboard() {
     if (key === 'CapsLock') {
       keyBtn.classList.add('keyboard__key_long');
       keyBtn.innerHTML = 'CapsLock';
+      keyBtn.addEventListener('click', () => {
+        if (key === 'CapsLock' && !isCaps) {
+          this.keyBtn.classList.toggle('keyboard__key_pressed');
+          keyBtn.forEach((btn) => {
+            btn.textContent.toUpperCase();
+          });
+        }
+      });
     }
     if (key === 'Enter') {
       keyBtn.classList.add('keyboard__key_long');
@@ -55,9 +64,88 @@ function createKeyboard() {
       keyBtn.innerHTML = 'Shift';
     }
     keyBtn.innerHTML = `${keys[codeKeys.indexOf(key)]}`;
+    keyBtn.setAttribute('data', `${codeKeys[codeKeys.indexOf(key)]}`);
     keyboard.appendChild(keyBtn);
   });
 }
+
 window.addEventListener('DOMContentLoaded', () => {
   createKeyboard();
 });
+
+const textBox = document.querySelector('.text');
+document.onkeydown = (evt) => {
+  textBox.focus();
+  document.querySelectorAll('.keyboard .keyboard__key').forEach((el) => {
+    el.classList.remove('keyboard__key_press');
+  });
+  document.querySelector(`.keyboard .keyboard__key[data="${evt.code}"]`).classList.add('keyboard__key_press');
+};
+document.onkeyup = () => {
+  textBox.focus();
+  document.querySelectorAll('.keyboard .keyboard__key').forEach((el) => {
+    el.classList.remove('keyboard__key_press');
+  });
+};
+// document.querySelectorAll('.keyboard .keyboard__key').forEach((element) => {
+//   element.onclick = () => {
+//     document.querySelectorAll('.keyboard .keyboard__key').forEach((el) => {
+//       el.classList.remove('keyboard__key_press');
+//     });
+//     this.classList.add('keyboard__key_press');
+//   };
+// });
+
+document.querySelectorAll('.keyboard .keyboard__key').forEach((elem) => {
+  elem.addEventListener('click', (e) => {
+    const targetItem = e.target;
+    if (targetItem.closest('.keyboard__key')) {
+      // const tr = targetItem.closest('.keyboard__key');
+      elem.classList.remove('keyboard__key_press');
+      const code = this.getAttribute('data');
+      this.classList.add('keyboard__key_press');
+      textBox.textContent += `${keys[codeKeys.indexOf(code)]}`;
+    }
+  });
+});
+
+window.addEventListener('keydown', (event) => {
+  if (event.defaultPrevented) {
+    return;
+  }
+  const textarea = document.querySelector('#text');
+  textarea.focus();
+  let pos = textarea.selectionStart;
+  const right = textarea.value.slice(pos);
+  const left = textarea.value.slice(0, pos);
+  switch (event.key) {
+    case 'ArrowLeft':
+      if (pos > 1) {
+        pos -= 1;
+      } else {
+        pos = 0;
+      }
+      break;
+    case 'ArrowRight':
+      pos += 1;
+      break;
+    case 'Enter':
+      this.properties.value += '\n';
+      break;
+    case 'Backspace':
+      this.properties.value = `${left.slice(0, -1)}${right}`;
+      pos += 1;
+      break;
+    case 'Space':
+      this.properties.value += ' ';
+      pos += 1;
+      break;
+    case 'Delete':
+      this.properties.value = `${left}${right.slice(1)}`;
+      pos += 1;
+      break;
+    default:
+      return;
+  }
+  event.preventDefault();
+}, true);

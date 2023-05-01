@@ -16,9 +16,9 @@
 }
 
 .text {
-  display: block;
+  display: flex;
+  justify-content: center;
   width: 80%;
-  max-width: 1200px;
   height: 200px;
   margin: 2% 10%;
   padding: .5rem;
@@ -40,6 +40,9 @@
   align-items: center;
   cursor: pointer;
 }
+.keyboard__key:hover{
+  background-color: rgba(230, 230, 230, 0.7);
+}
 
 .keyboard__key_long {
   width: 93px;
@@ -51,9 +54,9 @@
 .keyboard__key_pressed {
   background-color: rgb(79, 158, 158);
 }
-.keyboard__key.active{
+.keyboard__key:active{
   background-color: darkslategrey;
 }
-.clear {
-  clear: both;
+.keyboard__key_press{
+  background-color: rgb(70, 117, 117);
 }
